@@ -1,0 +1,126 @@
+---
+title: JVM-性能监控和故障处理工具
+date: 2018-04-25 22:10:24
+tags: [Java, JVM]
+---
+排查定位问题的时候，一般会用到的数据有：运行日志、异常堆栈、GC 日志、线程快照（threaddump/javacore 文件）、堆转储快照（heapdump/hprof 文件）等。
+$JAVA_HOME$/bin 目录下有很多功能强大的性能监控、故障定位排查工具，它们大多是 $JAVA_HOME$/lib/tools.jar 类库的包装，功能代码是在 tools 类库中实现的，因而体积都很小。使用 java 代码实现这些工具的意义在于：当 app 部署到生产环境后，无论是直接接触物理服务器还是远程登陆到服务器上都可能受到限制，借助 tools.jar 类库里面的接口，可以直接在 app 中实现功能强大的监控分析功能。
+这里是一些常用自带/第三方性能监控、故障定位处理工具。
+
+### jps（JVM Process Status Tool）显示指定系统内所有 HotSpot 虚拟机进程
+功能类似于 Unix/Linux 中的 ps 命令：列出正在运行的虚拟机进程，并显示虚拟机执行主类（Main Class，main() 函数所在的类）名称以及这些进程的本地虚拟机唯一 ID（Local Virtual Machine Identifier， LVMID）。
+
+#### 命令格式：
+jps [options] [hostid]
+
+#### 主要选项：
+* -l：显示进程 ID 和主类全名，如果执行的是 jar 包，则输出 jar 路径；
+* -m：输出虚拟机进程启动时传递给主类 main() 函数的参数；
+* -v：输出虚拟机进程启动时 JVM 参数；
+* -q：只输出 LVMID，省略主类的名称。
+
+### jstat（JVM statistics Monitoring Tool） 监视收集虚拟机各类运行状态数据
+可以显示本地或远程虚拟机的类装载、内存、垃圾收集、JIT 编译等运行数据，在没有 GUI 而只提供纯文本控制台环境的服务器上，它是运行期定位虚拟机性能问题的首选工具。
+
+#### 命令格式：
+jstat [option vmid [interval [s | ms] [count]]]
+其中，
+interval：查询间隔（默认毫秒）；count：查询次数。省略这两个参数即只查询一次。
+如果是本地虚拟机进程，VMID 与 LVMID 一致，如果是远程虚拟机进程，VMID 格式为：[protocol: ] [ // ] lvmid [@hostname [: port] / servername]
+示例：jstat -gc 7717 500 10：每 500 ms 查询一次进程 7717 垃圾收集情况，共查询 10 次。
+
+#### 主要选项：
+选项比较多，主要分为 3 类：类装载、垃圾收集、运行期编译状况。常用的有
+* -class：监视类装载数量、卸载数量、总空间以及类装载所耗费的时间
+* -gc：监视 java 堆状况，包括 Eden 区、两个 Survivor 区、老年代、永久代等的容量、已用空间、GC 时间合计等信息
+* -gccapacity：监视内容基本与 -gc 相同，但输出主要关注 java 堆各个区域使用到的最大、最小空间
+* -gcutil：监视内容基本与 -gc 相同，但输出主要关注已使用空间占总空间的百分比
+* -gcnew：监视新生代 GC 情况
+* -gcnewcapacity：监视内容基本与 -gcnew 相同，但输出主要关注使用到的最大、最小空间
+* -gcold：监视老年代 GC 情况
+* -gcoldcapacity：监视内容基本与 -gcold 相同，但输出主要关注使用到的最大、最小空间
+* -gcmetacapacity：监视 metaspace 情况
+* -compiler：输出 JIT 编译器编译过的方法、耗时情况等信息
+* -printcompilation：输出已经被 jIT 编译的方法
+
+_结果列信息可参考 man jstat_
+
+### jmap（Memory Map for Java） 生成虚拟机的内存转储快照（heapdump/dump 文件）
+也可以通过 -XX: +HeapDumpOnOutOfMemoryError 参数让虚拟机在 OOM 异常出现之后自动生成 dump 文件；或在 Linux 下 通过 kill -3 命令发送进程退出信号，也将生成 dump 文件。
+jmap 还可以查询 finalize 执行队列、java 堆和永久代的详细信息，如空间使用率、当前使用的收集器种类等。
+
+#### 命令格式：
+jmap [option] vmid
+
+#### 主要选项：
+* -dump：生成 java 堆转储快照，格式为：-dump: [live, ] format=b, file=<filename>   其中 live 子参数说明是否只 dump 出存活的对象。示例：   
+jmap -dump:live,format=b,file=heap.bin <pid>
+* -F：对 -dump 选项没有响应时，可用该选项强制生成 dump 快照。（仅在 Linux/Solaris 下有效）
+* -heap：显示 java 堆详细信息，如使用哪种回收器、参数配置、分代状况等。（仅在 Linux/Solaris 下有效）
+* -finalizerinfo：显示在 F-Queue 中等待 Finalizer 线程执行 finalie() 方法的对象。（仅在 Linux/Solaris 下有效）
+* -histo：显示堆中对象统计信息，包括类、实例数量、合计容量等 _（histogram）_
+
+### jstack（Stack Trace for Java） java 堆栈跟踪工具
+用于生成虚拟机当前时刻的线程快照（一般为 threaddump 或 javacore 文件）。**线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合**。生成快照的主要目的是定位线程出现长时间停顿的原因，如线程间锁等待（死锁、活锁）、死循环、请求外部资源（如数据库连接、网络资源、设备资源等）导致的长时间等待等，都是导致线程长时间停顿的常见原因。线程出现停顿的时候通过 jstack 来查看各个线程的调用堆栈，可以看出没有响应的线程到底在后台做些什么事情，或者在等待什么资源。
+
+#### 命令格式：
+jmap [option] vmid
+
+#### 主要选项：
+* -l：除堆栈外，显示关于锁的附加信息
+* -m：如果调用到本地方法的话，可以显示 C/C++ 的堆栈
+* -F：当正常输出的请求不被响应时，强制输出线程堆栈
+
+### jinfo（Configuration Info for Java） 显示虚拟机配置信息
+实时查看和调整虚拟机各项参数。
+
+#### 命令格式：
+jinfo [option] pid
+
+### javap JDK 自带的反汇编器
+
+#### 命令格式：
+javap [option] xxx.class
+
+#### 主要选项：
+* -c：输出类中各方法的未解析的代码，即构成java字节码的指令
+* -classpath <pathlist>：指定javap用来查找类的路径。目录用：分隔
+* -extdirs <dirs>：覆盖搜索安装方式扩展的位置，扩展的缺省位置为jre/lib/ext
+* -J<flag>：直接将flag传给运行时系统
+* -l： 输出行及局部变量表
+* -public：只显示public类及成员
+* -protected：只显示protected和public类及成员。
+* -private：显示所有的类和成员
+* -package：只显示包、protected和public类及成员，这是缺省设置
+* -s：输出内部类型签名
+* -bootclasspath <pathlist>：指定加载自举类所用的路径，如jre/lib/rt.jar或i18n.jar
+* -verbose：打印堆栈大小、各方法的locals及args参数，以及class文件的编译版本
+
+### jhat 分析 heapdump 文件
+建立一个 http/html 服务器，让用户可以在浏览器上查看分析结果。配合 jmap 使用。
+分析过程耗时而且消耗硬件资源，一般而言，不会在服务器上直接分析 dump 文件，而是复制到其他机器上进行分析；jhat 的分析功能比较简陋。在 JDK 10 中已弃用，建议使用功能更强大的 VisualVM、Eclipse Memory Analyzer、IBM HeapAnalyzer 等工具。
+
+### HSDIS 插件
+Sun 官方推荐的 HotSpot 虚拟机 JIT 编译代码的反汇编插件。
+
+### jconsole（Java Monitoring & Management Console）java监视与管理控制台
+基于 JMX 的可视化监视、管理工具。管理部分的功能是针对 JMX MBean 进行管理， MBean 可以使用代码、中间服务器的管理控制台或者所有符合 JMX 规范的软件进行访问。
+
+主界面包括 6 个页签：概述、内存、线程、类、VM摘要、MBean
+* 概述
+整个虚拟机主要数据的概览，包括：堆内存使用情况、线程、类、CPU 占用率，是后续 4 个页签的信息汇总；
+* 内存
+相当于可视化的 jstat，用于监视受收集器管理的虚拟机内存（java 堆和永久代）的变化趋势。
+* 线程
+相当于可视化的 jstack，遇到线程停顿时可以使用这个页签进行监控分析。
+
+### VisualVM（All-in-One Java Troubleshooting Tool） 可视化多合一故障处理工具
+提供丰富的功能：运行监视、故障处理、性能分析（Profiling），而且，不需要被监视的程序基于特殊的 Agent 运行，因此对应用程序的实际性能的影响很小，使得它可以直接应用在生产环境中。
+它的“All-in-One”体现在：
+* 显示虚拟机进程以及进程的配置、环境信息（jps、jinfo）；
+* 监视应用程序的 CPU、GC、堆、方法区、线程等的信息（jstat、jstack）；
+* dump 和分析堆转储快照（jmap、jhat）；
+* 方法级的程序运行性能分析，找出被调用最多、运行时间最长的方法；
+* 离线程序快照：收集程序的运行时配置、线程 dump、内存 dump 等信息，建立一个快照，可以将快照发送给开发者进行处理；
+* 丰富的插件资源；
+* etc.
