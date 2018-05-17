@@ -14,3 +14,7 @@ top [-u 用户名]：当前用户进程占用资源情况，包括 进程所有�
 默认以 CPU 使用率排序，输入大写 M 可以切换成以内存使用率排序，大写 P 以 CPU 占用率排序。
 4. pmap 命令：man 解释：report memory map of a process。
 pmap -d 进程号：根据进程查看该进程相关信息占用的内存情况。
+
+
+**查看电池状态**
+upower -i `upower -e | grep 'BAT'`

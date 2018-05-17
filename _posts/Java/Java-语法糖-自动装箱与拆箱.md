@@ -19,7 +19,7 @@ int n = i;
 几个容易出错的例子：
 1. **新建对象还是引用已存在对象？**
 
-{% codeblock Main.java lang:java  %}
+```java
 public class Main {
     public static void main(String[] args) {
 
@@ -35,19 +35,19 @@ public class Main {
 ------- output: -------
 true
 false
-{% endcodeblock %}
+```
 输出结果表明i1和i2指向的是同一个对象，而i3和i4指向的是不同的对象。通过查看源码 ↓↓↓
 这段是 valueOf()方法具体实现：
-{% codeblock Integer.java lang:java  %}
+```java
 public static Integer valueOf(int i) {
         if(i >= -128 && i <= IntegerCache.high)
             return IntegerCache.cache[i + 128];
         else
             return new Integer(i);
 }
-{% endcodeblock %}
+```
 而其中IntegerCache类的实现为：
-{% codeblock IntegerCache.java lang:java  %}
+```java
 private static class IntegerCache {
         static final int high;
         static final Integer cache[];
@@ -75,12 +75,12 @@ private static class IntegerCache {
 
         private IntegerCache() {}
     }
-{% endcodeblock %}
+```
 可以看出，在通过 valueOf()方法创建 Integer 对象的时候，如果数值在 [-128, 127] 之间，则返回指向 IntegerCache.cache 中已经存在的对象的引用，否则创建一个新的 Ingeter 对象。故，i1 和 i2 会直接从 cache 中取出已经存在的对象，所以它们指向的是同一个对象；而 i3 和 i4 则是新创建的两个不同对象。类似的还有 Long、Short、Character、Byte，但 Double、Float、Boolean 则直接返回新创建的对象。
 
 2. **它们相等吗？**
 注意以下代码：
-{% codeblock IntegerCache.java lang:java  %}
+```java
 public class Main {
     public static void main(String[] args) {
 
@@ -104,7 +104,7 @@ true
 true
 false
 true
-{% endcodeblock %}
+```
 
 这里需要注意以下事实：
 * 当 “==”运算符的两个操作数都是包装器类型的引用，则是比较指向的是否是同一个对象；如果其中有一个操作数是表达式（即包含算术运算），则比较的是数值（即会触发自动拆箱的过程）；
@@ -115,7 +115,7 @@ _可尝试反编译字节码查看相关内容。_
 
 #### 自动装箱与直接新建的区别
 即，以下两种创建方式的区别：
-```
+```java
 Integer i = new Integer(x);
 Integer i = x;
 ```
