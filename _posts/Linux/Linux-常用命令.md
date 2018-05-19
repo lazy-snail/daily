@@ -7,6 +7,7 @@ tags: [Linux, Shell]
 **查看内存使用情况**
 1. free 命令：man 解释：Display amount of free and used memory in the system。
 free -m：显示内存情况：已用、未用、总量等信息。
+ps：free 命令读取的信息就来源于 /proc/meminfo。其中的 buffers 列为块设备 inode 管理的所有 page cache 数量；cached 为内核总缓存-buffers-交换缓存总和。
 2. /proc/meminfo
 cat /proc/meminfo：显示内存的详细情况，包括以上信息。
 3. top
