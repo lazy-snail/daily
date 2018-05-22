@@ -12,7 +12,7 @@ tags: C++
 ## 详解
 迭代器是一种行为类似指针（smart pointer）的对象。根据移动特性与实现的操作，STL 提供了5种类型的迭代器：
 1. Input Iterator（输入迭代器），不允许改变，只读（read only）；
-2. Output Iterator（输出迭代器），只写（write， only）；
+2. Output Iterator（输出迭代器），只写（write only）；
 3. Forward Iterator（前向迭代器），允许写入型算法如，replace()，在迭代器所制定的区间进行读写操作；
 4. Bidirectional Iterator（双向迭代器），某些算法需要逆向访问某个迭代器区间（如逆向拷贝某范围的元素）；
 5. Random Access Iterator（随即访问迭代器），前四种都只提供一部分指针运算能力：前三种支持 operator++，第四种加上了 operator--，第5种则涵盖所有指针运算：p±n、p[n]、p1-p2、p1 < p2。
@@ -45,6 +45,6 @@ ptrdiff_t distance = ptr2 - ptr1;  //结果即为difference_type
 3. reference：指迭代器所指对象的类型的引用。一般用在迭代器的 * 运算符重载上，如果 value_type 是 T，那么对应的 reference_type 就是 T&，如果value_type 是 const T，那么对应的 reference_type 就是 const T&。从“迭代器所指对象的内容是否允许改变的角度”，迭代器分为两种：
     > 不允许改变“所指对象的内容”，即 const iterators；如 const int *pic;
     > 允许改变“所指对象的内容”，即 mutable iterators，如 int *pi;
-4. pointer：指迭代器所指的对象，也就是相应的指针。对指针而言，最常用最重要的功能就是 operator* 和 operator-> 这两个运算符。因此迭代器需要对这两个运算符进行重载。pointer 和 reference 在 C++ 中关联密切：如果“返回一个左值，令它代表 p 所指对象”是可行的，那么，“返回一个左值，令它代表 p 所指对象的地址”也一定可行。即：我们能够返回一个 pointer，指向迭代器所指对象。
+4. pointer：指迭代器所指的对象，也就是相应的指针。对指针而言，最常用最重要的功能就是解引用 operator* 和成员访问 operator-> 这两个运算符。因此迭代器需要对这两个运算符进行重载。pointer 和 reference 在 C++ 中关联密切：如果“返回一个左值，令它代表 p 所指对象”是可行的，那么，“返回一个左值，令它代表 p 所指对象的地址”也一定可行。即：我们能够返回一个 pointer，指向迭代器所指对象。
 
 5. iterator_category：分类迭代器，以上提到的5类迭代器（Input/Output Iterator等），由于有递进增强的关系，在使用时如，某个算法可以接受 Forward Iterator，此时使用 Random Access Iterator 自然同样可用，但可用不代表最佳。任何一个迭代器，其类型永远应该落在“该迭代器所隶属的各种类型中，最强化（最佳效率）的那个”。
