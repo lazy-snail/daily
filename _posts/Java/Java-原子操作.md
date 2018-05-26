@@ -16,7 +16,7 @@ java.util.concurrent.atomic 包中提供了一些原子类：AtomicXxx，它们�
 * 数组类：AtomicIntegerArray、AtomicLongArray、AtomicReferenceArray；
 * 复合变量类：AtomicStampedReference、AtomicMarkableReference；
 
-所有这些类都支持 CAS。AtomicInteger、AtomicLong 还支持算术运算。如果想模拟其他基本类型的原子变量，可以将 short、byte 等类型呢过与 int 类型进行转换，以及使用 floatToIntBits 或 doubleToLongBits 来转换浮点数。
+所有这些类都支持 CAS。AtomicInteger、AtomicLong 还支持算术运算。如果想模拟其他基本类型的原子变量，可以将 short、byte 等类型通过与 int 类型进行转换，以及使用 floatToIntBits 或 doubleToLongBits 来转换浮点数。
 
 
 **锁的缺点**
