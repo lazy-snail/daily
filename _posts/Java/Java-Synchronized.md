@@ -82,3 +82,4 @@ public class StringBufferTest {
 
 #### 锁消除（Lock Elimination）
 删除不必要的加锁操作。根据代码逃逸技术，如果 jvm 判断出一段代码中，堆上的数据不会逃逸出当前线程，那么可以认为这段代码是线程安全的，也就无需加锁。
+
