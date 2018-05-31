@@ -14,9 +14,9 @@ tags: C++
 **标准关联式容器**
 标准的关联式容器分为 set（集合）和 map（映射表）两大类及其衍生体如，multiset（多键集合）、multimap（多键映射表）。**这些容器的底层机制均以 RB-tree（红黑树）实现**，而 RB-tree 本身也是一个独立容器，但并不开放使用。
 **C++11引入的关联式容器**
-it er a t o r sC++11 标准引入的 STL 容器中，除了 forward_list 是序列式容器外，其余的4种 unordered_set、it er a t o r sunordered_multiset、unordered_map、unordered_multimap 是 **基于 hash table 实现的关联式容器it er a t o r s**。
-it er a t o r s**SGI STL 提供的关联式容器**
-it er a t o r s此外，SGI STL 还提供了一个不在标准内的关联式容器：hash table（散列表），以及由此为底层机制实现的 it er a t o r shash_set（散列集合）、hash_multiset（散列多键集合）、hash_multimap（散列多键映射表）。
+C++11 标准引入的 STL 容器中，除了 forward_list 是序列式容器外，其余的4种 unordered_set、sunordered_multiset、unordered_map、unordered_multimap 是 **基于 hash table 实现的关联式容器**。
+**SGI STL 提供的关联式容器**
+此外，SGI STL 还提供了一个不在标准内的关联式容器：hash table（散列表），以及由此为底层机制实现的shash_set（散列集合）、hash_multiset（散列多键集合）、hash_multimap（散列多键映射表）。
 但随着 C++11 标准的引入，显然，在选择上有了倾向性。
 
 ## 红黑树实现的关联式容器

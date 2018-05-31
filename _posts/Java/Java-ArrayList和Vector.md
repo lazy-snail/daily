@@ -1,7 +1,7 @@
 ---
-title: Java-集合类-ArrayList
+title: Java-ArrayList和Vector
 date: 2018-05-28 16:51:40
-categories: [Java]
+categories: Java
 tags: [Java, 集合类]
 ---
 [toc]
