@@ -5,10 +5,14 @@ categories: Java
 tags: [java, 集合类]
 ---
 [toc]
-## 集合类
+## 集合类/容器类
 java 集合类图谱：
-{% asset_img Java集合.png Java集合类族谱 %}
-可以看出，java 的集合类主要由两个接口派生而出：Collection 和 Map，这两个接口又包含了一些接口或实现类。
+{% asset_img Java集合类.png Java集合类族谱 %}
+可以看出，java 的集合类主要由两个接口派生而出：Collection 和 Map，这两个接口又包含了一些接口或实现类。以下介绍的集合类还都实现了 java.io.Serializable 接口，即支持序列化，部分也实现了 RandomAccess、Cloneable 等接口。
+
+## Arrays
+最简洁的数组实现，不提供实例化方法，所有的方法都是静态的。可以容纳基本类型和对象。
+
 
 ## Collection 接口
 一个 Collection 代表一组 Object，即 Collection 的元素（Elements）。一些 Collection 允许相同的元素而另一些不行，一些能排序而另一些不行。JDK 不提供 Collection 的直接实现，而是继承自 Collection “子接口”如 Set、List、Queue 的类。
@@ -17,6 +21,7 @@ java 集合类图谱：
 ## Iterable 接口：
 Collection 接口扩展了 Iterable 接口，后者的 Iterator() 方法返回一个迭代器 Iterator（一个接口），为集合框架提供 **遍历所有元素** 的方法。Iterator 模式把访问逻辑从不同的集合类中抽象出来，从而避免向客户端暴露集合的内部结构。每种集合类返回的 Iterator 具体类型可能不同，但它们都实现了 Iterator 接口，因此，不必关心到底是哪种 Iterator，它只需要获得这个 Iterator 接口即可。
 迭代器取代了 Java 集合框架中的 Enumeration（历史遗留类），Iterator 更加安全，因为当一个集合正在被遍历的时候，它会阻止其它线程去修改集合（以抛异常的方式）。要确保遍历过程顺利完成，必须保证遍历过程中不更改集合的内容（Iterator 的 remove() 方法除外）。所以，确保遍历可靠的原则是：**只在一个线程中使用这个集合，或者在多线程中对遍历代码进行同步**。
+
 ### Iterator
 显然，一个实现了 Iterable 接口的类必然实现了 Iterator 接口——作为 Iterable 的一个方法。反之则不成立。
 Iterator接口提供的三种方法： 
@@ -25,40 +30,57 @@ Iterator接口提供的三种方法：
 * void remove(): 删除集合里上一次next方法返回的元素。 
 
 ## Set 接口
-Set 是一种不包含重复元素的 Collection，i.e. 任意两个元素都有 e1.equals(e2) == false（也最多只有一个 null 元素）。这里就需要注意，必须要小心操作可变对象（Mutable Object）：如果一个 Set 中的可变元素改变了自身状态而导致 Object1.equals(Object2) == true，将引发一些问题。
+Set 是一种不包含重复元素的 Collection，i.e. 任意两个元素都有 e1.equals(e2) == false（也最多只有一个 null 元素）。这里就需要注意，必须要小心操作可变对象（Mutable Object）：如果一个 Set 中的可变元素改变了自身状态而导致 Object1.equals(Object2) == true，将引发一些问题。Set 接口的实现不提供随机访问，一般通过迭代器访问。
 
 实现 Set 接口的常用类有：
-### HashSet
+### 非线程安全版本 Set
+#### HashSet
 采用散列存储方式，**为快速查找设计的 Set，无序**——不保证元素插入的顺序和输出顺序一致。**非线程安全**
 
-### LinkedHashSet：
+#### LinkedHashSet：
 具有 HashSet 的查询速度优势，内部使用链表维护元素的顺序（插入次序），所以使用迭代器时会按照元素的插入顺序遍历。**非线程安全**
 
-### TreeSet
+#### TreeSet
 使用红黑树结构实现，维持集合中的元素有序，相应地时间复杂度损失：添加、删除、包含的算法复杂度为O(logn)。**非线程安全**
 
+### 线程安全版本 Set
+#### CopyOnWriteArraySet 
+JDK 1.5 新增的 Set 接口实现，可以看作 HashSet 的线程安全版本，安全性保证来源于底层 CopyOnWriteArrayLis 的实现。通过源码中父类继承/接口实现来看，相当于一个通过动态数组实现的“集合”。尽管二者都继承自共同的父类 AbstractSet，其实现却有不同：HashSet 是通过散列表即 HashMap 实现的，而 CopyOnWriteArraySet——从命名上也可以看出，是基于数组（通过源码可知，是基于动态数组 CopyOnWriteArrayList）实现的。CopyOnWriteArrayList 允许重复元素，但 CopyOnWriteArraySet 保持作为集合的属性，不允许重复元素。
+特点（基本等同 CopyOnWriteArrayList 特点）：
+* 线程安全。使用迭代器进行遍历的速度很快，并且不会与其他线程发生冲突。在构造迭代器时，迭代器依赖于不变的数组快照。迭代器支持hasNext()、next() 等不可变操作，但不支持可变 remove() 等操作；
+* 通常需要复制整个基础数组，所以可变操作（add()、set() 和 remove() 等等）的开销很大。
+* 适用于：Set 大小通常保持很小，只读操作远多于可变操作，需要在遍历期间防止线程间的冲突。
 
 ## List 接口
 List 是有序的 Collection，可以含有相同的元素，每个元素的插入位置是可控制的，能够使用检索（类似于数组的下标）访问元素。
 除了具有 Collection 接口必备的 Iterator() 方法外，List 还提供一个 listIterator() 方法，返回一个ListIterator 接口，和标准的 Iterator 接口相比，ListIterator 多了一些 add()、set() 之类的方法，允许添加、删除、设定元素，还能向前或向后遍历 previous()。
 
 实现 List 接口的常用类有：
-### ArrayList
-实现了可变大小数组，**非线程安全**，支持随机访问。不同于 Array 的是，Array 可以容纳基本类型和对象，而 ArrayList 只能容纳对象。
+### 非线程安全版本 List
+#### ArrayList
+实现了可变大小数组，底层通过基础数组实现，**非线程安全**，支持随机访问。不同于 Arrays 的是，Arrays 可以容纳基本类型和对象，而 ArrayList 只能容纳对象。
 每个 ArrayList 实例都有一个容量（capacity)，即用于存储元素的数组的大小，该容量可以随着元素的不断添加而自动增长，但是增长算法并没有定义。当需要插入大量元素时，在插入前可以调用 arrayList.ensureCapacity(minCapacity) 来增加容量以提高插入效率。
 
-### LinkedList
+#### LinkedList
 擅长增删元素，**非线程安全**。同时扩展了 Queue 接口（准确说是 扩展了 Deque 接口，而 Deque 接口扩展了 Queue 接口），具有队列的性质和优势。
 
-### Vector _遗留类_：
+### 线程安全版本 List
+#### CopyOnWriteArrayList
+JDK 1.5 新增的 List 接口实现，可以看作 ArrayList 的线程安全版本，通过 **增加写时复制语义来实现线程安全性**。从源码可见，底层通过一个动态数组实现，并实现了 List、RandomAccess、Cloneable、Serializable 4 个接口。
+特点：
+* 线程安全。使用迭代器进行遍历的速度很快，并且不会与其他线程发生冲突。在构造迭代器时，迭代器依赖于不变的数组快照。迭代器支持hasNext()、next() 等不可变操作，但不支持可变 remove() 等操作；
+* 通常需要复制整个基础数组，所以可变操作（add()、set() 和 remove() 等等）的开销很大。
+* 适用于：Set 大小通常保持很小，只读操作远多于可变操作，需要在遍历期间防止线程间的冲突。
+
+#### Vector _遗留类_：
 类似于 ArrayList，支持同步，**线程安全**。
 
-### Stack _遗留类_：
+#### Stack _遗留类_：
 继承自 Vector，也支持同步，提供了更多的的方法：
 * push、pop；
 * peek：得到栈顶元素；
 * empty：判断是否为空；
-* search 检测一个元素的位置。
+* search：检测一个元素的位置。
 
 ## Queue 接口
 支持队列的一般性质：先进先出，头部出队，尾部入队，etc. 
@@ -77,15 +99,25 @@ List 是有序的 Collection，可以含有相同的元素，每个元素的插�
 用于存储键值对结构对象。
 
 实现 Map 接口的常用类有：
-### HashMap
-非同步的，非线程安全。
+### 非线程安全版本 Map
+#### HashMap
+基于散列表实现。
+非同步的，非线程安全；
+键值都允许有 null 值；
 
-### HashTable
+#### LinkedHashMap
+
+
+#### TreeMap
+基于红黑树实现。
+
+### 线程安全版本 Map
+
+#### ConcurrentHashMap
+JDK 1.5 新增的 Map 接口实现，可以看作 HashMap 的线程安全版本，提供更好的扩展性，用以替代 HashTable。
+
+#### ConcurrentSkipListMap 
+JDK 1.6 新增的 Map 接口实现，基于跳表实现（Skip list，一种可以代替平衡树的数据结构）。可以看作 TreeMap 的线程安全版本。但实现上有所不同。
+
+#### HashTable _遗留类_
 同步的，保证线程安全，其他入操作等几乎等同于 HashMap。由于同步的原因，单线程环境下效率不高，此时应使用 HashMap。
-从 JDK 1.5 开始，新增 ConcurrentHashMap 类，提供更好的扩展性，用以替代 HashTable。
-
-### LinkedHashMap
-
-
-### TreeMap
-
