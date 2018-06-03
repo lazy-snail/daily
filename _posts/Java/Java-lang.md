@@ -28,6 +28,24 @@ COW（Copy-On-Write，写时复制）是一种用于程序设计中的优化策�
 
 ### COW 容器
 i.e. 写时复制容器。JDK1.5 引入了两个 COW 机制的实现类容器：CopyOnWriteArrayList、CopyOnWriteArraySet。简单理解就是：当需要往容器添加元素时，不直接往当前容器添加，而是将当前容器进行拷贝，复制出一个新的容器，然后将待添加元素加入到新的容器中，添加完成后，再将原容器的引用指向新容器。这样做的好处是，可以 **对容器进行并发读而不需要加锁**，因为当前容器不会添加容器，也就不会改变。整体上是一种读写分离的思想，读和写在不同的容器进行。
+{% asset_img COW添加元素.png 添加元素 %}
+整个 add 操作在锁保护下进行，避免多线程并发造成副本混乱：
+```java
+public boolean add(E e) {
+    synchronized (lock) {
+        Object[] elements = getArray();
+        int len = elements.length;
+        Object[] newElements = Arrays.copyOf(elements, len + 1);
+        newElements[len] = e;
+        setArray(newElements);
+        return true;
+    }
+```
+由于所有的写操作都是在新数组进行，如果有并发写，则通过锁来控制；如果并发读，则：
+* 如果写操作未完成，那么直接读取原数组的数据；
+* 如果写操作已完成，但引用还未指向新数组，那么也是直接读取原数组的数据；
+* 如果写操作已完成，并且引用已指向新数组，那么直接读取新数组的数据；
+可见，读操作可以不加锁。
 
 ### 应用场景
 适用于 **读多写少的并发场景**。比如白名单，黑名单，商品类目的访问和更新场景等。

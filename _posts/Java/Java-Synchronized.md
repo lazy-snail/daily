@@ -2,7 +2,7 @@
 title: Java-Synchronized
 date: 2018-05-26 14:19:58
 categories: java
-tags: [java, 并发]
+tags: [Java, 并发]
 ---
 [toc]
 ## synchronized

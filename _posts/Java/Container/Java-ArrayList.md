@@ -67,6 +67,8 @@ public class CopyOnWriteArrayList<E>
     implements List<E>, RandomAccess, Cloneable, java.io.Serializable {}
 ```
 
+具体线程安全保证见 COW 技术实现。
+
 ## Vector 线程安全的动态数组
 其类定义如下：
 ```java
