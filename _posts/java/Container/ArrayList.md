@@ -1,8 +1,8 @@
 ---
-title: Java-ArrayList
+title: ArrayList
 date: 2018-05-28 16:51:40
-categories: Java
-tags: [Java, 集合类]
+categories: java
+tags: [java, 容器]
 ---
 [toc]
 **ArrayList 相关类**

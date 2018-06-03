@@ -1,7 +1,8 @@
 ---
 title: Python-装饰器
 date: 2018-04-23 09:49:22
-tags: py
+categories: py
+tags: [py]
 ---
 函数是一个对象，可以赋值给变量，所以也可以通过变量调用该函数：
 ```

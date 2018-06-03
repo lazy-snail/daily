@@ -1,8 +1,8 @@
 ---
 title: cpp-STL组件-算法
 date: 2018-05-18 16:19:38
-categories: C++
-tags: C++
+categories: cpp
+tags: cpp
 ---
 [toc]
 **以有限的步骤，解决逻辑或数学上的问题**。

@@ -1,7 +1,8 @@
 ---
 title: JVM-GC算法
 date: 2018-04-25 09:37:21
-tags: [Java, JVM]
+categories: java
+tags: [java, JVM]
 ---
 GC 算法的实现涉及大量的程序细节，且各个平台上的 JVM 操作内存的方法也不相同，所以算法的具体实现有很大差异。但策略思想是通用的。
 

@@ -1,8 +1,8 @@
 ---
-title: Java-类文件结构
+title: java-类文件结构
 date: 2018-04-27 23:04:54
-categories:
-tags: [Java, JVM]
+categories: java
+tags: [java , JVM]
 ---
 ### 平台无关性的基石
 **各种不同平台的 VM 与所有平台统一使用的程序存储格式——字节码（ByteCode）是构成平台无关性的基石。**

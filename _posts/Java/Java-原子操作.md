@@ -1,7 +1,8 @@
 ---
-title: Java-原子操作
+title: java-原子操作
 date: 2018-04-20 22:39:41
-tags: Java
+categories: java
+tags: [java, 并发]
 ---
 在 java.util.concurrent 包的许多类中，如 Semaphore、ConcurrentLinkedQueue，都提供了比 synchronized 机制更高的性能和可伸缩性。这种性能的提升主要来源于 **原子变量** 和 **非阻塞的同步机制**。
 

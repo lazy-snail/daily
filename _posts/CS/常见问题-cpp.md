@@ -1,8 +1,8 @@
 ---
 title: 常见问题-cpp
 date: 2018-05-23 10:23:39
-categories: [C++]
-tags: [C++, Q&A]
+categories: cpp
+tags: [cpp, Q&A]
 ---
 [toc]
 ## 内存

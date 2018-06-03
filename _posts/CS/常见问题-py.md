@@ -1,7 +1,8 @@
 ---
-title: 常见问题-lang-Python
+title: 常见问题-py
 date: 2018-04-22 23:00:42
-tags: py
+categories: py
+tags: [py, Q&A]
 ---
 **python 中 range 和 xrange 的区别**
 range

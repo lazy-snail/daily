@@ -1,8 +1,8 @@
 ---
 title: cpp-STL组件-函数对象
 date: 2018-05-19 13:54:45
-categories: C++
-tags: C++
+categories: cpp
+tags: cpp
 ---
 [toc]
 ## 仿函数/函数对象

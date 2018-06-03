@@ -1,7 +1,8 @@
 ---
-title: JVM-GC实现
+title: GC实现
 date: 2018-04-25 10:28:55
-tags: [Java, JVM]
+categories: java
+tags: [java, JVM]
 ---
 **收集算法是内存回收的方法论，垃圾收集器是内存回收的具体实现**。jvms 并未对垃圾收集器的实现作任何规范。这里以基于 JDK 1.7 的 HotSpot 虚拟机为例：
 {% asset_img GC收集器.jpg HotSpot 所包含的收集器 %}

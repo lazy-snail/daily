@@ -1,7 +1,8 @@
 ---
-title: Java-数据类型
+title: java-数据类型
 date: 2018-04-25 00:49:20
-tags: Java
+categories: java
+tags: [java]
 ---
 Java 语言是静态类型（statical typed）的，所以也是强类型（strong typed）的，即，每个变量都具有一种类型，并且每种类型都是严格定义的。
 Java中有两种数据类型：primitive type 和 reference type，即，基本类型和引用类型。

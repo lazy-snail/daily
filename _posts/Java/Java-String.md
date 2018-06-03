@@ -1,7 +1,8 @@
 ---
-title: Java-String
+title: java-String
 date: 2018-04-26 22:55:01
-tags: [Java]
+categories: java
+tags: [java]
 ---
 ### == vs equals() 比较问题
 java 中，equals()方法被认为是对对象的值进行深层次的比较，而“==”是进行浅层次的比较：

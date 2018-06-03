@@ -1,8 +1,8 @@
 ---
 title: Java-JDK8新特性-方法引用
 date: 2018-04-28 22:49:33
-categories:
-tags: Java
+categories: java
+tags: [java, 新特性]
 ---
 ### 方法引用(Method Reference)
 #### 简介

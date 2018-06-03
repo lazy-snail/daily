@@ -1,8 +1,8 @@
 ---
 title: cpp-STL组件-适配器
 date: 2018-05-19 15:31:26
-categories: C++
-tags: C++
+categories: cpp
+tags: cpp
 ---
 [toc]
 ## 适配器(adapters)

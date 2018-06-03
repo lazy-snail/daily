@@ -1,8 +1,8 @@
 ---
 title: cpp-STL组件-关联式容器
 date: 2018-05-18 16:19:38
-categories: C++
-tags: C++
+categories: cpp
+tags: [cpp, 容器]
 ---
 [toc]
 **容器，置物之所也**

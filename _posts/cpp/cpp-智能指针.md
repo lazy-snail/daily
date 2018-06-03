@@ -1,8 +1,8 @@
 ---
 title: cpp-智能指针
 date: 2018-05-22 16:20:41
-categories: C++
-tags: C++
+categories: cpp
+tags: cpp
 ---
 [toc]
 ## 智能指针（Smart Pointer）

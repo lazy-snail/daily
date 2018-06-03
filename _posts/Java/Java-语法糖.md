@@ -1,8 +1,8 @@
 ---
 title: Java-语法糖
 date: 2018-04-27 14:52:39
-categories:
-tags: [Java]
+categories: java
+tags: [java]
 ---
 ### 关于语法糖（Syntactic Sugar）
 也称糖衣语法，由英国计算机科学家 Peter J · Landin 发明的一个术语，指在计算机预言中添加的某种语法，这种语法对语言的功能并没有影响，但是更方便程序员使用。通常，使用语法糖能够增加程序的可读性，从而减少代码出错的机会。

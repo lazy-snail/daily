@@ -1,8 +1,8 @@
 ---
-title: Java-JDK8新特性-Lambda
+title: JDK8新特性-Lambda
 date: 2018-04-28 22:49:33
-categories:
-tags: Java
+categories: java
+tags: [java, 新特性]
 ---
 ### Lambda 表达式
 #### 简介

@@ -1,8 +1,8 @@
 ---
 title: 常见问题-Java
 date: 2018-05-26 09:54:02
-categories:
-tags:
+categories: java
+tags: [java, Q&A]
 ---
 [toc]
 ## 锁和死锁

@@ -1,8 +1,8 @@
 ---
-title: Java-Map
+title: Map
 date: 2018-06-03 19:27:12
-categories: Java
-tags: [Java, 集合类]
+categories: java
+tags: [java, 容器]
 ---
 [toc]
 **实现了 Map 接口的常用容器类**

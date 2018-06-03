@@ -1,7 +1,8 @@
 ---
-title: Python-迭代器
+title: py-迭代器
 date: 2018-04-23 09:50:09
-tags: py
+categories: py
+tags: [py]
 ---
 #### 迭代（Iteration）
 如，给定一个 list 或 tuple，可以通过 for 循环遍历之，称之为 迭代。
