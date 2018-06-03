@@ -125,3 +125,7 @@ JDK 1.6 新增的 Map 接口实现，基于跳表实现（Skip list，一种可�
 
 #### HashTable _遗留类_
 同步的，保证线程安全，其他入操作等几乎等同于 HashMap。由于同步的原因，单线程环境下效率不高，此时应使用 HashMap。
+
+
+## String 相关
+String 也可以看作是容器的一种。StringBuilder 非线程安全，StringBuffer 线程安全。
