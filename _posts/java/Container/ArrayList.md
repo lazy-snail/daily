@@ -6,7 +6,7 @@ tags: [java, 容器]
 ---
 [toc]
 **ArrayList 相关类**
-包括非线程安全的 ArrayList、线程安全的 CopyOnWriteArrayList、线程安全但目前已不推荐使用的 Vector 和其子类 Stack。
+包括非线程安全的 ArrayList，线程安全的 CopyOnWriteArrayList，线程安全但目前已不推荐使用的 Vector 和其子类 Stack。
 
 ## ArrayList 非线程安全的动态数组
 使用连续内存空间，容量动态增长。行为类似于 Arrays，但只能存放对象类型，而不能像 Arrays 可以支持基本数据类型。其类定义如下：
