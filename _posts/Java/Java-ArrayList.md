@@ -57,8 +57,15 @@ for(Integer number : arrayList)
 
 
 ## CopyOnWriteArrayList 线程安全的 ArrayList
-JDK1.5 新增数据结构。doc 简介：
+JDK1.5 新增数据结构，使用 COW 实现的线程安全数组。doc 简介：
 A thread-safe variant of ArrayList in which all mutative operations (add, set, and so on) are implemented by making a fresh copy of the underlying array.
+i.e. 所有可变操作都是对底层数组进行一次新的复制实现的。
+其类定义如下：
+```java
+package java.util.concurrent;
+public class CopyOnWriteArrayList<E>
+    implements List<E>, RandomAccess, Cloneable, java.io.Serializable {}
+```
 
 ## Vector 线程安全的动态数组
 其类定义如下：
@@ -93,6 +100,10 @@ while (enu.hasMoreElements()) {
 }
 ```
 四种遍历方式的效率也和 ArrayList 类似，for 循环最快。
+
+### 为什么不再推荐使用？
+根据以下的解释，通常我们是想同步整个序列，而提供的方法是同步单个操作，这并不安全，仍然需要获得一个锁来避免并发修改，并且其方法的效率较低。
+https://stackoverflow.com/questions/1386275/why-is-java-vector-and-stack-class-considered-obsolete-or-deprecated
 
 
 ## Stack 继承自 Vector 的栈实现
