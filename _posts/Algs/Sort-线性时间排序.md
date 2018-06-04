@@ -3,7 +3,7 @@ title: Sort-线性时间排序算法
 date: 2018-03-28 00:34:10
 tags: [Sort, Algs]
 ---
-比较排序的时间复杂度下限 O(n*logn) 是确定的。在这篇博客里有[各种比较排序的对比](http://www.cnblogs.com/gaochundong/p/comparison_sorting_algorithms.html)	 。
+比较排序的时间复杂度下限 O(n*logn) 是确定的。在这篇博客里有[各种比较排序的对比](http://www.cnblogs.com/gaochundong/p/comparison_sorting_algorithms.html "各种比较排序的对比")。
 还有一类非比较排序算法，适用于一些特定情况。这种特定情况一般是对集合的范围界定：当集合满足一定条件，可以不使用比较的方式实现排序，从而获得优于比较排序下限的时间复杂度：线性时间复杂度内完成排序。
 常见的线性时间复杂度排序算法有：
 1. 计数排序（Counting Sort）
