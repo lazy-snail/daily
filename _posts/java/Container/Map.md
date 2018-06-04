@@ -32,7 +32,7 @@ static class Node<K,V> implements Map.Entry<K,V> {
 * 非线程安全的；
 * 根据键的 hashCode 值存储数据。大多数情况下可以直接定位键值对，因而具有很快的访问速度，理论上时间复杂度为 O(1)；
 * 遍历顺序是不确定的，也无法支持随机访问；
-* 最多只允许一条记录的键为 null，允许多条记录的值为 null。
+* 不允许重复键，最多只允许一条记录的键为 null，允许多条记录的值为 null。
 
 ### hashCode 方法和加载因子
 HashMap 基于哈希函数来存储键值对，即，由一个哈希函数决定每个键值对的存放位置，存放位置所使用的数据结构为一个数组，其初始容量为（DEFAULT_INITIAL_CAPACITY= 1 << 4），即 16，并且要求该值必须为 2 的幂，这与其底层数据结构有关。在不出现哈希碰撞（两个键值对的哈希结果相同）的情况下，即完美哈希时，访问时间复杂度即为 O(1)。HashMap 使用 **开散列** 方法来解决哈希冲突，即，**对应一个特定 hash 值的位置存储的是一个链表头，指向 hash 到同一个位置的多个键值对组成的链表**。这种实现的访问时间复杂度显然不是常数级，且随着键值对的增多，发生碰撞的情况会加剧。所以 HashMap 有一个加载因子（DEFAULT_LOAD_FACTOR = 0.75f），**用来控制当 HashMap 到达一定“装载程度”时执行 rehash（重哈希）操作，使得容量变为原来的约 2 倍**。注意，重哈希是个非常耗时的操作，所以有必要采取一些措施（比如预估并在初始化时调用指定初始数组容量的构造方法）来避免/减少。
@@ -90,3 +90,49 @@ LinkedHashMap 的存取过程与 HashMap 基本类似，只是在细节实现上
 可以用以上方法快速构建 LRU 算法实现。
 
 [参考博客](https://blog.csdn.net/justloveyou_/article/details/71713781 "理解 LinkedHashMap")
+
+
+## TreeMap RB-tree 结构 Map
+```java
+package java.util;
+public class TreeMap<K,V>
+    extends AbstractMap<K,V>
+    implements NavigableMap<K,V>, Cloneable, java.io.Serializable {}
+```
+* 继承了 AbstractMap，而 AbstractMap 实现了 Map 接口，并实现了 Map 接口中定义的方法，减少了其子类继承的复杂度；
+* 实现了 Map 接口，成为 Map 框架中的一员，可以包含 key-value 形式的元素；
+* 实现了 NavigableMap 接口，拥有了更强的元素搜索能力；
+* 实现了 Cloneable 接口，实现了 clone() 方法，可以被克隆；
+* 实现了 Serializable 接口，支持序列化操作，可通过 Hessian 协议进行传输；
+
+### NavigableMap & SortedMap 接口
+{% asset_img NavigableMap接口.png NavigableMap接口 %}
+其中，SortedMap 接口定义了 Comparator<? super K>，即比较器，这决定了 TreeMap 体系的走向，也是其有别于 HashMap 体系最关键的一个接口实现：用比较器对插入元素进行排序，从而决定其插入位置。
+NavigableMap 接口进一步扩展了 SortedMap 接口：主要用于 **增强对元素的搜索获取操作，如返回集合中某一区间的元素、返回小于/大于某一值的元素等**。
+
+#### 排序方式
+* 默认情况下，使用元素自然排序，需要元素实现 Comparable 接口；
+* 使用自定义比较器排序，需要在创建 TreeMap 对象时，将自定义比较器对象传入到其构造方法中。此时无需再实现 Comparable 接口。
+
+### RB-tree 数据结构
+TreeMap 底层使用红黑树实现，具有理论 O(logn) 的操作时间复杂度，增删操作通过旋转操作保持树的平衡性。
+[Algs4 中关于红黑树的部分](https://algs4.cs.princeton.edu/33balanced/ "Algs4 中关于红黑树的部分")
+[参考博客](https://www.jianshu.com/p/2dcff3634326 "参考博客")
+
+### 特点
+* 非线程安全
+* 不允许出现重复键；可以插入 null 键（最多一个），null 值（不限制）；
+* 可以对元素进行排序；
+* 无序集合：插入和遍历顺序不一致。
+
+### 主要方法
+* gut：利用平衡树的快速查找，可以在 O(logn) 时间内定位要查找的元素；
+* put：如果存在，old value 被替换；如果不存在，则新增节点，然后对红黑树通过旋转作平衡操作；
+* 遍历：类似于中序遍历的方式迭代输出所有元素；
+
+### ### ###
+以上 3 个是 Map 的基础实现，尤其是 HashMap，是 java 中最为常用的数据结构。它们都是非线程安全的，但可以通过 Collections 类的 synchronized 相关方法将它们转换为同步类。此外，java 实现了与之对应的线程安全的容器类。
+### ### ###
+
+## HashTable 线程安全的 HashMap
+不过，Hashtable 继承自 Dictionary 虚类，而非 AbstractMap。
