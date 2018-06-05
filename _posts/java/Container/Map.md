@@ -48,6 +48,12 @@ HashMap 的很多方法都是基于 hashCode() 和 equal() 的，前者用来定
 ### 常用方法
 put()、get()：根据数据结构特点可知，先利用 hashCode 定位到具体的链表，再在链表中遍历是否已存在，然后操作。
 
+### resize 死循环
+当 HashMap 的 size 超过 Capacity * loadFactor 时，即需要重哈希扩容时，将原来的数据重新计算哈希值并插入到新的数组中的过程，是非线程安全的，在多线程并发执行该操作的过程中，可能出现死循环，即在重新链接时出现环，导致失败。
+
+### fast-fail
+在使用迭代器的过程中，如果 HashMap 被修改，那么将抛出 ConcurrentModificationException，即 Fast-fail 策略：在并发集合进行迭代操作时，若有其他线程对其进行结构性的修改，这时迭代器会立马感知到，并立即抛出 ConcurrentModificationException 异常，而不是等到迭代完成之后才告诉你（此时早已经出错了）。
+
 ### 问题
 #### 容量为什么必须是 2 的幂？
 HashMap 中的数据结构是数组 + 单链表的组合。我们希望元素存放的更均匀，理想情况是，Entry 数组中每个位置都只有一个元素，这样，查询的时候效率最高，不需要遍历单链表，也不需要通过 equals() 去比较 K，而且空间利用率最大，时间复杂度最优。
@@ -133,6 +139,3 @@ TreeMap 底层使用红黑树实现，具有理论 O(logn) 的操作时间复杂
 ### ### ###
 以上 3 个是 Map 的基础实现，尤其是 HashMap，是 java 中最为常用的数据结构。它们都是非线程安全的，但可以通过 Collections 类的 synchronized 相关方法将它们转换为同步类。此外，java 实现了与之对应的线程安全的容器类。
 ### ### ###
-
-## HashTable 线程安全的 HashMap
-不过，Hashtable 继承自 Dictionary 虚类，而非 AbstractMap。

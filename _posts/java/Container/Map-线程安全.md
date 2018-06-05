@@ -34,7 +34,8 @@ HashTable 使用“拉链法”实现哈希表。几个重要参数：
 
 
 ## ConcurrentHashMap
-线程安全、支持高效并发版本的 HashMap。默认的理想状态下，可支持 16 个线程执行并发写操作及任意数量线程的读操作。其源码具体实现依赖于 java 内存模型，包括重排序、内存可见性（volatile 关键字相关）、happen-before（偏序关系）等。
+随着 JDK 的变迁，ConcurrentHashMap 从一开始的分段锁（JDK1.7 以及之前）技术转换到基于 CAS 实现（JDK1.8+）。以下以 CAS 实现为例：
+线程安全、支持高效并发版本的 HashMap。其源码具体实现依赖于 java 内存模型，包括重排序、内存可见性（volatile 关键字）、happen-before（偏序关系）等。
 ```java
 package java.util.concurrent;
 public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
@@ -44,13 +45,60 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
 public interface ConcurrentMap<K,V> extends Map<K,V> {}
 ```
 
-### Segment 和 
+### 数据结构
+JDK1.7之前通过分段锁技术使得理论并发数量等于其 ConcurrentHashMap 类对象实例的 Segment（相当于一个小型哈希表） 个数。从 JDK1.8 开始为进一步提高并发性，摒弃了分段锁的解决方案，直接使用一个大的数组：
+```java
+transient volatile Node<K,V>[] table;
+```
+同时为了提高哈希碰撞下的寻址性能，在链表长度超过阈值（TREEIFY_THRESHOLD = 8）时将链表转换为一棵红黑树，即将寻址时间复杂度从 O(n) 降低到 O(logn)：
+```java
+if (binCount >= TREEIFY_THRESHOLD)
+    // Conversion from/to TreeBins
+    treeifyBin(tab, i);
+```
+{% asset_img concurrenthashmap_java8.png ConcurrentHashMap数据结构 %}
 
-### 高效并发
-不同于 HashTable 和由同步包装器包装的 HashMap (Collections.synchronizedMap(Map<K,V> m))需要全局锁来同步不同线程间的并发访问，ConcurrentHashMap 的并发读写操作对性能的影响更小：读操作（几乎）不需要加锁，写操作使用 **锁分段技术** 来实现只对所操作的数据段加锁而不影响对其他段的访问。
-ConcurrentHashMap 本质上是一个 Segment 数组，一个 Segment 实例又包含若干个桶，每个桶中都包含一条由若干个 HashEntry 对象链接起来的链表：
+### 寻址方式
+同样（类比 HashMap、HashTable、旧版本的该类实现）是通过 Key 的哈希值与数组长度取模确定该 Key 在数组中的索引。同样为了避免不太好的 Key 的 hashCode 设计，它通过以下方法计算得到 Key 的最终哈希值。不同的是，JDK1.8+ 的 ConcurrentHashMap 作者认为引入红黑树转化策略后，即使哈希冲突比较严重，寻址效率也足够高，所以并未在哈希值计算上做过多设计，而只将 Key 的 hashCode 与其高 16 位作异或（XOR）并保证最高位为 0（从而保证最终结果为正整数）：
+```java
+static final int spread(int h) {
+    return (h ^ (h >>> 16)) & HASH_BITS; }
+
+```
+
+### 同步方式
+put 操作，如果 Key 对应的数组元素为 null，则通过 CAS 操作将其设置为当前值；否则，对该元素使用 synchronized 关键字申请锁，成功后再进行操作。操作完成后判断是否需要将该处的链表转换为红黑树。
+get 操作，由于数组是被 volatile 关键字修饰的（见上），因此无需担心数组的可见性问题。同时每个元素是一个 Node 实例（JDK1.7 每个元素是一个 hashEntry），它的 Key 值和 hash 值都由 final 修饰，不可修改，故也无需担心它们被修改的可见性问题。而 Value 及对下一个元素的引用由 volatile 修饰，也能保证可见性：
+```java
+static class Node<K,V> implements Map.Entry<K,V> {
+    final int hash;
+    final K key;
+    volatile V val;
+    volatile Node<K,V> next;
+    ... }
+```
+
+Key 对应的数组元素的可见性，由 Unsafe 的 getObjectVolatile 方法保证:
+```java
+static final <K,V> Node<K,V> tabAt(Node<K,V>[] tab, int i) {
+    return (Node<K,V>)U.getObjectAcquire(tab, ((long)i << ASHIFT) + ABASE); }
+```
+
+### size() 操作
+put 和 remove 方法都会通过 addCount 方法维护 Map 的 size。size 方法通过 sumCount 获取由 addCount 方法维护的 Map 的 size。
+
+
+### 分段锁技术（JDK1.7）
+采用分段锁技术实现的 ConcurrentHashMap 结构：
 {% asset_img ConcurrentHashMap.jpg ConcurrentHashMap结构 %}
-其通过以下机制保证高效并发：
-* 通过锁分段技术保证并发环境下的写操作；
-* 通过 HashEntry 的不变性、Volatile 变量的内存可见性和加锁重读机制保证高效、安全的读操作；
-* 通过不加锁和加锁两种方案控制跨段操作的的安全性。
+
+
+## ConcurrentSkipListMap
+线程安全的有序的 Map。底层数据结构使用跳表——在并发场景下，它的性能优于红黑树。
+```java
+package java.util.concurrent;
+public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
+    implements ConcurrentNavigableMap<K,V>, Cloneable, Serializable {}
+```
+
+
