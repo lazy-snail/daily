@@ -1,6 +1,7 @@
 ---
-title: OS-CPU 调度.md
+title: CPU调度
 date: 2018-04-20 07:40:12
+categories: OS
 tags: OS
 ---
 CPU 调度的基本单位是线程。

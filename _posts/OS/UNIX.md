@@ -1,5 +1,5 @@
 ---
-title: OS-关于 UNIX
+title: UNIX
 date: 2018-04-11 08:52:50
 tags: OS
 ---
