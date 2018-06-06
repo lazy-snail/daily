@@ -35,7 +35,7 @@ HashTable 使用“拉链法”实现哈希表。几个重要参数：
 
 ## ConcurrentHashMap
 随着 JDK 的变迁，ConcurrentHashMap 从一开始的分段锁（JDK1.7 以及之前）技术转换到基于 CAS 实现（JDK1.8+）。以下以 CAS 实现为例：
-线程安全、支持高效并发版本的 HashMap。其源码具体实现依赖于 java 内存模型，包括重排序、内存可见性（volatile 关键字）、happen-before（偏序关系）等。
+线程安全、支持高效并发版本的 HashMap。其源码具体实现依赖于 java 内存模型，包括重排序、内存可见性（volatile 关键字）、happen-before（偏序关系）等。[ConcurrentHashMap演进](http://www.jasongj.com/java/concurrenthashmap)
 ```java
 package java.util.concurrent;
 public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
@@ -46,16 +46,7 @@ public interface ConcurrentMap<K,V> extends Map<K,V> {}
 ```
 
 ### 数据结构
-JDK1.7之前通过分段锁技术使得理论并发数量等于其 ConcurrentHashMap 类对象实例的 Segment（相当于一个小型哈希表） 个数。从 JDK1.8 开始为进一步提高并发性，摒弃了分段锁的解决方案，直接使用一个大的数组：
-```java
-transient volatile Node<K,V>[] table;
-```
-同时为了提高哈希碰撞下的寻址性能，在链表长度超过阈值（TREEIFY_THRESHOLD = 8）时将链表转换为一棵红黑树，即将寻址时间复杂度从 O(n) 降低到 O(logn)：
-```java
-if (binCount >= TREEIFY_THRESHOLD)
-    // Conversion from/to TreeBins
-    treeifyBin(tab, i);
-```
+JDK1.7之前通过分段锁技术使得理论并发数量等于其 ConcurrentHashMap 类对象实例的 Segment（相当于一个小型哈希表） 个数。从 JDK1.8 开始为进一步提高并发性，摒弃了分段锁的解决方案，直接使用一个大的数组，同样考虑哈希碰撞将长度超过阈值的桶链表转换为红黑树：
 {% asset_img concurrenthashmap_java8.png ConcurrentHashMap数据结构 %}
 
 ### 寻址方式
@@ -87,18 +78,18 @@ static final <K,V> Node<K,V> tabAt(Node<K,V>[] tab, int i) {
 ### size() 操作
 put 和 remove 方法都会通过 addCount 方法维护 Map 的 size。size 方法通过 sumCount 获取由 addCount 方法维护的 Map 的 size。
 
-
 ### 分段锁技术（JDK1.7）
 采用分段锁技术实现的 ConcurrentHashMap 结构：
 {% asset_img ConcurrentHashMap.jpg ConcurrentHashMap结构 %}
 
 
 ## ConcurrentSkipListMap
-线程安全的有序的 Map。底层数据结构使用跳表——在并发场景下，它的性能优于红黑树。
+线程安全的有序的 Map。底层数据结构使用跳表——在并发场景下，它的性能优于红黑树，实现上也简单得多。
 ```java
 package java.util.concurrent;
 public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     implements ConcurrentNavigableMap<K,V>, Cloneable, Serializable {}
 ```
 
-
+## CAS 构建并发安全性
+CAS 属于底层硬件（CPU）层面的技术实现。
