@@ -5,6 +5,8 @@ categories: java
 tags: [java, 容器]
 ---
 [toc]
+## Map 接口
+
 **实现了 Map 接口的常用容器类**
 Map 可以看作是一种符号表，使用键值对的数据结构存储数据。
 包括非线程安全的 HashMap、LinkedHashMap、TreeMap，线程安全的 ConcurrentHashMap、ConcurrentSkipListMap，线程安全但目前已不推荐使用的 HashTable。
