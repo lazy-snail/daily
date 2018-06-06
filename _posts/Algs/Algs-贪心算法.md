@@ -1,8 +1,8 @@
 ---
 title: Algs-贪心算法
 date: 2018-05-01 20:30:43
-categories:
-tags:
+categories: Algs
+tags: Algs
 ---
 [toc]
 ## 贪心算法（greedy algorithm）

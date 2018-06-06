@@ -1,7 +1,7 @@
 ---
 title: Sort-快速排序
 date: 2018-05-01 09:27:28
-categories:
+categories: Algs
 tags: [Sort, Algs]
 ---
 [TOC]

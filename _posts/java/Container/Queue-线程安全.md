@@ -85,3 +85,6 @@ Node pred = tryAppend(s, haveData);
 return awaitMatch(s, pred, e, (how == TIMED), nanos);
 ```
 * tryTransfer方法：试探下生产者传入的元素是否能直接传给消费者。如果没有消费者等待接收元素，则返回 false。和 transfer方法的区别是 tryTransfer 方法无论消费者是否接收，方法都立即返回。而 transfer 方法是必须等到消费者消费了才返回。对于带有时间限制的 tryTransfer(E e, long timeout, TimeUnit unit) 方法，则是试图把生产者传入的元素直接传给消费者，但是如果没有消费者消费该元素则等待指定的时间再返回，如果超时还没消费元素，则返回 false，如果在超时时间内消费了元素，则返回 true。
+
+
+[阻塞队列](http://www.infoq.com/cn/articles/java-blocking-queue)

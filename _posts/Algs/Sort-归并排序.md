@@ -1,7 +1,7 @@
 ---
 title: Sort-归并排序
 date: 2018-05-01 01:45:10
-categories:
+categories: Algs
 tags: [Sort, Algs]
 ---
 ## 简述

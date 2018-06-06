@@ -1,8 +1,8 @@
 ---
 title: Algs-KMP算法
 date: 2018-05-05 08:42:23
-categories:
-tags:
+categories: Algs
+tags: Algs
 ---
 [toc]
 ## The Knuth-Morris-Pratt Algorithm

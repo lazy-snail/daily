@@ -1,6 +1,7 @@
 ---
 title: Sort-线性时间排序算法
 date: 2018-03-28 00:34:10
+categories: Algs
 tags: [Sort, Algs]
 ---
 比较排序的时间复杂度下限 O(n*logn) 是确定的。在这篇博客里有[各种比较排序的对比](http://www.cnblogs.com/gaochundong/p/comparison_sorting_algorithms.html "各种比较排序的对比")。

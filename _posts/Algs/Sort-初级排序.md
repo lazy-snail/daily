@@ -1,6 +1,7 @@
 ---
 title: Sort-初级排序
 date: 2018-03-29 20:51:50
+categories: Algs
 tags: [Sort, Algs]
 ---
 [toc]
