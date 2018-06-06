@@ -50,6 +50,8 @@ public class ArrayDeque<E> extends AbstractCollection<E>
     }
 ```
 从命名可知，底层是使用数组实现的。ArrayDeque 和LinkedList 是 Deque 的两个通用实现，官方更推荐使用 AarryDeque 用作栈和队列。
+ArrayDeque 使用循环数组实现：
+{% asset_img ArrayDeque.png 循环数组实现 %}
 
 
 # PriorityQueue
