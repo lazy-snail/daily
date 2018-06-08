@@ -8,14 +8,11 @@ Java 语言是静态类型（statical typed）的，所以也是强类型（stro
 Java中有两种数据类型：primitive type 和 reference type，即，基本类型和引用类型。
 {% asset_img 数据类型.png java 数据类型 %}
 
-#### primitive type
+# primitive type
 
-
-
-
-
-#### reference type
+# reference type
 JDK 1.2 之后，java扩充了引用的概念，分为：强引用、软引用、弱引用、虚引用 4 种。引用强度依次减弱。
+[java 引用](http://droidyue.com/blog/2014/10/12/understanding-weakreference-in-java)
 
 **强引用（Strong Reference）**
 代码中普遍存在的，类似“Object obj = new Object ( )”这类引用，只要强引用还在，GC 就不会回收被引用的对象；
