@@ -4,7 +4,7 @@ date: 2018-04-20 22:39:41
 categories: java
 tags: [java, 并发]
 ---
-在 java.util.concurrent 包的许多类中，如 Semaphore、ConcurrentLinkedQueue，都提供了比 synchronized 机制更高的性能和可伸缩性。这种性能的提升主要来源于 **原子变量** 和 **非阻塞的同步机制**。
+在 JUC 包的许多类中，如 Semaphore、ConcurrentLinkedQueue，都提供了比 synchronized 机制更高的性能和可伸缩性。这种性能的提升主要来源于 **原子变量** 和 **非阻塞的同步机制**。主要是利用 CPU 硬件对并发的支持，如 CAS 技术等。
 
 ## 分类
 java.util.concurrent.atomic 包中提供了一些原子类：AtomicXxx，它们是线程安全的，但不是通过同步或锁机制来实现的，比锁的粒度更细，量级更轻。原子变量的操作会变为平台提供的用于并发访问的硬件原语。由于是非阻塞算法设计，不存在死锁和其他活跃性问题。
