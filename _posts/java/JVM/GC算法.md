@@ -1,5 +1,5 @@
 ---
-title: JVM-GC算法
+title: GC算法
 date: 2018-04-25 09:37:21
 categories: java
 tags: [java, JVM]
