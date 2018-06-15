@@ -1,8 +1,8 @@
 ---
-title: 关于Redis
+title: Redis
 date: 2018-05-30 09:14:03
-categories: Redis
-tags: [Redis, DB]
+categories: backend
+tags: [backend, DB]
 ---
 [toc]
 ## 基于 Key-Value 的 NoSQL 内存数据库

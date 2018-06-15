@@ -5,8 +5,8 @@ categories: java
 tags: [java]
 ---
 [toc]
-# 反射
-Reflection，是 java 语言的特征之一，它允许运行中的 java 程序获取自身的信息，并且可以操作类对象或类的内部属性。反射的核心是 JVM 在运行时才动态加载类或调用方法/访问属性，它不需要事先（写代码的时候或编译期）知道运行对象是谁。
+# Reflection
+反射，是 java 语言的特征之一，它允许运行中的 java 程序获取自身的信息，并且可以操作类对象或类的内部属性。反射的核心是 JVM 在运行时才动态加载类或调用方法/访问属性，它不需要事先（写代码的时候或编译期）知道运行对象是谁。
 Oracle 官方解释：
 Reflection enables Java code to discover information about the fields, methods and constructors of loaded classes, and to use reflected fields, methods, and constructors to operate on their underlying counterparts, within security restrictions.
 The API accommodates applications that need access to either the public members of a target object (based on its runtime class) or the members declared by a given class. It also allows programs to suppress default reflective access control.
@@ -64,7 +64,6 @@ Class<?> classInt = Integer.TYPE;
 StringBuilder str = new StringBuilder("123");
 Class<?> klass = str.getClass();
 ```
-
 
 ## 判断是否为某个类的实例
 一般，用 instanceof 关键字来判断是否为某个类的实例。同时也可以使用 isInstance() 方法判断是否为某个类的实例，这是一个 Native 方法：	
@@ -124,10 +123,10 @@ method.setAccessible(true);
 method.invoke(instanceOfClass, newValue);
 ```
 
+# 应用场景
+java 中很重要的两个概念：注解和动态代理，都是使用反射技术有着很紧密的联系。
 
-# 利用反射开发框架
-反射最重要的用途是开发各种通用框架。
-比如 Spring、MyBatis 等框架都是配置化的，为了保证框架的通用性它们可以根据配置文件加载不同的类/对象，调用不同的方法，此时就必须使用反射——运行时动态加载需要加载的对象。
+反射最重要的用途是开发各种通用框架。比如使用动态代理的 Spring、MyBatis 等框架都是配置化的，为了保证框架的通用性它们可以根据配置文件加载不同的类/对象，调用不同的方法，此时就必须使用反射——运行时动态加载需要加载的对象。
 
 
 

@@ -37,7 +37,7 @@ if (binCount >= TREEIFY_THRESHOLD)
     // Conversion from/to TreeBins
     treeifyBin(tab, i);
 ```
-基于 HashMap 实现的其他版本也有此演进（详见JDK1.7- 到 JDK1.8 源码变化）。
+基于 HashMap 实现的其他版本也有此演进（详见JDK1.7- 到 JDK1.8+ 源码变化）。
 
 ### 寻址方式
 通过 Key 的哈希值与数组长度取模确定该 Key 在数组中的索引。同样为了避免不太好的 Key 的 hashCode 设计，它通过以下方法计算得到 Key 的最终哈希值。JDK1.8+ HashMap 作者认为引入红黑树转化策略后，即使哈希冲突比较严重，寻址效率也足够高，所以并未在哈希值计算上做过多设计，而只将 Key 的 hashCode 与其高 16 位作异或（XOR）并保证最高位为 0（从而保证最终结果为正整数）：
