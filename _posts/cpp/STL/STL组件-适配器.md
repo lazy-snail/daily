@@ -1,5 +1,5 @@
 ---
-title: cpp-STL组件-适配器
+title: STL-适配器
 date: 2018-05-19 15:31:26
 categories: cpp
 tags: cpp

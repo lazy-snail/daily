@@ -33,20 +33,22 @@ public class ArrayList<E> extends AbstractList<E>
 1. 申请新的连续内存空间；
 2. 将数据拷贝到新内存区域。
 
+ArrayList 在执行 remove 相关方法后，并不会收缩容量，即，容量只会扩增。最终不用时进入 GC。
+
 ## 三种遍历元素的方式
+### 索引（for 循环）
+由于扩展了 RandomAccess 接口，有实例方法 arrayList.size()，可以获取元素数量，并且，list 接口的子类都按插入顺序排列元素，i.e. 可以以插入顺序取得所有元素，支持类似下标的索引操作：
+```java
+for(int i = 0; i < arrayList.size(); i++)
+   System.out.print(arrayList.get(i) + " ");
+```
+
 ### 迭代器
 对于 List、String 等类型，由于实现了 Iterator 接口（事实上是实现了 Iterable 接口），需要保证要遍历的对象非空，判断是否还有下一个元素：
 ```java
 Iterator<Integer> it = arrayList.iterator();
 while(it.hasNext()) 
     System.out.print(it.next() + " ");
-```
-
-### 索引（for 循环）
-由于扩展了 RandomAccess 接口，有实例方法 arrayList.size()，可以获取元素数量，并且，list 接口的子类都按插入顺序排列元素，i.e. 可以以插入顺序取得所有元素，支持类似下标的索引操作：
-```java
-for(int i = 0; i < arrayList.size(); i++)
-   System.out.print(arrayList.get(i) + " ");
 ```
 
 ### foreach 
@@ -62,7 +64,6 @@ for(Integer number : arrayList)
 可以看出，RandomAccess 接口带来的优势：
 * 可以快速随机访问集合；
 * 使用快速随机访问（for 循环）效率可以高于 Iterator。
-
 
 # LinkedList 双向链表
 ```java

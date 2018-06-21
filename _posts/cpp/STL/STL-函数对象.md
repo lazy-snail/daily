@@ -1,5 +1,5 @@
 ---
-title: cpp-STL组件-函数对象
+title: STL-函数对象
 date: 2018-05-19 13:54:45
 categories: cpp
 tags: cpp
