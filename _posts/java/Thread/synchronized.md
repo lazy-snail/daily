@@ -113,7 +113,6 @@ public class StringBufferTest {
 ## 锁消除（Lock Elimination）
 删除不必要的加锁操作。根据代码逃逸技术，如果 jvm 判断出一段代码中，堆上的数据不会逃逸出当前线程，那么可以认为这段代码是线程安全的，也就无需加锁。
 
-
 ## 偏向锁
 偏向锁的引入是为了在没有多线程竞争的情况下尽量减少不必要的轻量级锁执行，因为轻量级锁的获取/释放依赖多次 CAS 原子指令，而偏向锁只需要在置换 ThreadID 的时候依赖一次 CAS 原子指令。
 可见，轻量级锁是 **在线程交替执行同步块时提高性能**，偏向锁是 **在只有一个线程执行同步块时进一步提高性能**。
@@ -155,13 +154,7 @@ Synchronized 使用的锁存放在 java 对象头里。如果对象是数组类�
 {% asset_img Synchronized锁状态.png Synchronized锁状态 %}
 
 
-
-
-
-
-
-
-
+[参考]
 https://blog.csdn.net/lcc793385991/article/details/57551827
 https://blog.csdn.net/u010842515/article/details/65443084
 https://blog.csdn.net/zwan0518/article/details/8725704
