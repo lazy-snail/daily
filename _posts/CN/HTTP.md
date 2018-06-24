@@ -6,7 +6,7 @@ tags: CN
 ---
 HyperText Transfer Protocol，超文本传输协议，它是 web 的核心。
 
-# HTTP 请求报文
+# HTTP 请求报文格式
 一个 HTTP 请求报文由请求行(request line)、首部行（header line）、空行、请求数据四部分组成。
 {% asset_img http请求.PNG HTTP 请求 %}
 
