@@ -9,8 +9,8 @@ tags: [java, 容器]
 Map 可以看作是一种符号表，使用键值对的数据结构存储数据。
 包括非线程安全的 HashMap、LinkedHashMap、TreeMap，线程安全的 ConcurrentHashMap、ConcurrentSkipListMap，线程安全但目前已不推荐使用的 HashTable。
 
-## HashTable 线程安全的 HashMap
-Hashtable 继承自 Dictionary 虚类，而非 AbstractMap：
+## HashTable 
+线程安全的 HashMap。Hashtable 继承自 Dictionary 虚类，而非 AbstractMap：
 ```java
 package java.util;
 public class Hashtable<K,V>
@@ -33,8 +33,8 @@ HashTable 使用“拉链法”实现哈希表。几个重要参数：
 而后续补充的相应线程同步容器类则从侧面验证了，它们不是好的选择。
 
 
-## ConcurrentHashMap 线程安全的 HashMap
-随着 JDK 的变迁，ConcurrentHashMap 从一开始的分段锁（JDK1.7 以及之前）技术转换到基于 CAS 实现（JDK1.8+）。以下以 CAS 实现为例：
+## ConcurrentHashMap 
+线程安全的 HashMap。随着 JDK 的变迁，ConcurrentHashMap 从一开始的分段锁（JDK1.7 以及之前）技术转换到基于 CAS 实现（JDK1.8+）。以下以 CAS 实现为例：
 线程安全、支持高效并发版本的 HashMap。其源码具体实现依赖于 java 内存模型，包括重排序、内存可见性（volatile 关键字）、happen-before（偏序关系）等。[ConcurrentHashMap演进](http://www.jasongj.com/java/concurrenthashmap)
 ```java
 package java.util.concurrent;
@@ -83,8 +83,8 @@ put 和 remove 方法都会通过 addCount 方法维护 Map 的 size。size 方�
 {% asset_img ConcurrentHashMap.jpg ConcurrentHashMap结构 %}
 
 
-## ConcurrentSkipListMap 线程安全的 TreeMap
-线程安全的有序的 Map。底层数据结构使用跳表——在并发场景下，它的性能优于红黑树，实现上也简单得多。
+## ConcurrentSkipListMap 
+线程安全的 TreeMap。线程安全的有序的 Map。底层数据结构使用跳表——在并发场景下，它的性能优于红黑树，实现上也简单得多。
 ```java
 package java.util.concurrent;
 public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>

@@ -2,7 +2,7 @@
 title: java-ThreadLocal
 date: 2018-06-07 20:06:13
 categories: java
-tags: [java, 并发]
+tags: [java, 并发, 线程]
 ---
 [toc]
 # ThreadLocal

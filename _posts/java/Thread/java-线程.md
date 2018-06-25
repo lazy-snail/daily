@@ -2,7 +2,7 @@
 title: java-线程
 date: 2018-04-14 15:39:53
 categories: java
-tags: [java, 并发]
+tags: [java, 并发, 线程]
 ---
 [toc]
 大多数现代 OS 中，都是以线程为基本的调度单位，而不是进程。
