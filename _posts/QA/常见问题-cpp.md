@@ -41,11 +41,13 @@ etc.
 
 # 重载
 ## 不能重载的操作符有：
-1. .（点号）
-2. ::（域解析符）
-3. ?:（条件语句运算符）
-4. sizeof（求字节运算符）
-5. typeid，static_cast，dynamic_cast，interpret_cast（类型转换符）
+* .（点号）  成员选择
+* .*  通过指向成员的指针访问成员
+* ::（域解析符）  
+* ?:（条件语句运算符）  
+* sizeof（求字节运算符）
+* alignof()  对象的对齐方式
+* typeid，static_cast，dynamic_cast，interpret_cast（类型转换符）
 
 # O
 ## POD

@@ -8,7 +8,6 @@ tags: [cpp, 容器]
 **容器，置物之所也**
 常用的数据结构不外乎 array（数组）、list（链表）、tree（树）、stack（栈）、queue（队列）、hash table（散列表）、set（集合）、map（映射表）等。根据数据在容器中的排列特性，这些数据结构分为序列式（sequence）和关联式（associative）两种。
 
-## 序列式容器
 所谓序列式容器，其中的元素都可序（ordered），但未必有序（sorted）。有以下种类：
 
 ## array

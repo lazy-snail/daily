@@ -24,14 +24,16 @@ Unix 里一切皆文件。
 对于内核而言，所有打开的文件都通过文件描述符引用，它是一个非负整数。UNIX 系统 shell 把文件描述符 0 与 标准输入关联，1 与标准输出关联，2 与标准错误关联。尽管这和内核无关，但各种 shell 和应用都遵循此惯例。
 
 # I/O 模型
-Linux 提供 5 种 I/O 模型：
+Linux 提供 5 种 I/O 模型，前 4 个是同步 I/O 模型：
 * 阻塞式 I/O
 * 非阻塞式 I/O
 * I/O 复用
 * 信号驱动 I/O（SIGIO）
 * 异步 I/O
 
+# 函数
+## select pselect poll epoll
+本质上都是同步 I/O 多路复用，可以监听多个描述符的读写事件，一旦某个描述符就绪（一般是读/写事件发生），就能够将发生的事件通知给相应的应用程序去处理该事件。
+对比：
 https://cloud.tencent.com/developer/article/1005481
 https://www.cnblogs.com/Anker/p/3265058.html
-
-# 函数
