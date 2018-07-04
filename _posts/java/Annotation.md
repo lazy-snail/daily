@@ -42,7 +42,7 @@ public class AnnotationDemo {
 ```
 通过在方法上使用 @Test 注解，在运行该方法时，测试框架会自动识别该方法并单独调用。@Test 实际上是一种标记注解，起到标记的作用，运行时告诉测试框架该方法为测试方法。对于 @Deprecated 和 @SuppressWarnings，则是 java 内置的注解，前者表明该方法/类已经过期或不建议再使用，后者表示忽略指定警告，括号里表示该注解可供配置的值，用花括号表示数组，配置参数值必须是编译时常量。
 
-###应用场景
+### 应用场景
 注解应用场景很多，主要给编译器及工具类型软件使用，如很多框架（Spring、Junit 等）。
 
 ## 定义注解
@@ -68,7 +68,6 @@ public @interface AnnotationName {
 该注解有两个属性：id、msg，并且 msg 定义了默认值，如果没有默认值则需要显式给出。特别地，如果注解只有 1 个属性，那么在给出值时可以不指明属性名；没有属性时，可以直接给出注解名，不需要括号。
 
 
-
 # 架构
 {% asset_img Annotation架构.jpg Annotation 架构 %}
 可见，
@@ -90,7 +89,6 @@ public interface Annotation {
 }
 
 ```
-
 
 
 http://www.infoq.com/cn/articles/cf-java-annotation
