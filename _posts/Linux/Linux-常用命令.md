@@ -19,3 +19,5 @@ pmap -d 进程号：根据进程查看该进程相关信息占用的内存情况
 
 **查看电池状态**
 upower -i `upower -e | grep 'BAT'`
+
+{% asset_img Linux-常用命令.png "Linux 常用命令" %}
