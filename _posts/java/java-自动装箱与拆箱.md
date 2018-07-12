@@ -1,5 +1,5 @@
 ---
-title: Java-语法糖-自动装箱与拆箱
+title: Java-自动装箱与拆箱
 date: 2018-04-26 19:19:26
 categories: java
 tags: [java]
