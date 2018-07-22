@@ -59,7 +59,7 @@ s1、s2 是 java 标准的对象创建方式，每调用一次就会在堆上创
 故，s1 和 s2 分别指向不同的两个对象，s3 和 s4 指向的则是同一个地址。考虑到前述事实，如果用 equals() 比较 s1 和 s2 的话，将返回 true。
 
 注意到以下代码：
-{% codeblock Main.java lang:java  %}
+```java
 public class Main {
     public static void main(String[] args) {
         String s1 = "123";
@@ -86,13 +86,13 @@ false
 false
 true
 false
-{% endcodeblock %}
+```
 这里引出以下问题：
 
 ### 字符串拼接方法
 **append()方法（StringBuilder/StringBuffer）**
 源码（手动添加注释）：
-{% codeblock AbstractStringBuilder.java lang:java  %}
+```java
 public AbstractStringBuilder append(String str) {
     if (str == null)
         return appendNull();
@@ -122,12 +122,12 @@ private void ensureCapacityInternal(int minimumCapacity) {
         value = Arrays.copyOf(value, newCapacity(minimumCapacity));
     }
 }
-{% endcodeblock %}
+```
 可以看出，整个 append()方法是通过字符数组的加长、拷贝等处理完成的，没有生成中间对象，只有最后用 toString()返回一个 String 对象。速度最快。
 
 **concat()方法**
 继续看源码：
-{% codeblock String.java lang:java  %}
+```java
 public String concat(String str) {
     int otherLen = str.length();
     if (otherLen == 0) {
@@ -142,7 +142,7 @@ public String concat(String str) {
     // 产生一个新的对象
     return new String(buf, true);
 }
-{% endcodeblock %}
+```
 整体是一个数组的拷贝，在内存中是原子操作，速度也很快，但最后返回语句会新建一个对象，这对速度有一定影响。
 
 ** “+” **
@@ -170,7 +170,7 @@ _这就解释了以上代码的结果。_
 
 ### String、StringBuffer、StringBuilder
 简单讲，
-**String：字符串常量（String 为 final 修饰类）；
+** String：字符串常量（String 为 final 修饰类）；
 StringBuffer：字符串变量，线程安全。
 StringBuilder：字符串变量，非线程安全；**
 
