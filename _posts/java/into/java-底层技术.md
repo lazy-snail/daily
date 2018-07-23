@@ -96,6 +96,7 @@ JDK 中提供的基于红黑树的 TreeMap 保证内部元素有序，但非线�
 Compare and Swap：比较并交换，就是借助了 CPU 的这些特殊指令实现的，是 java.util.concurrent（JUC）包中实现的区别于 synchronized 同步锁的一种乐观锁，非阻塞算法（一个线程的失败或挂起不应该影响其他线程的失败或挂起）。
 CAS 有 3 个操作数，内存值 V，旧的预期值 A，要修改的新值 B。当且仅当预期值 A 和内存值 V 相同时，将内存值 V 修改为 B，否则什么都不做：首先读取内存位置 V 的值 A，计算是否符合修改条件，是，则以原子方式将 V 中的值由 A 变成 B，期间会检测是否有其他线程干扰（修改 V 值），有干扰则进入失败重试阶段；否，则不进行任何操作，并返回 V 中的值。
 程序内部执行 CAS 并不需要执行 JVM 代码、系统调用或线程调度操作。而 CAS 的缺点主要是：它将使调用者处理竞争问题（重试、回退、放弃等），而在锁中竞争问题是自动处理的（不需要应用开发者再处理）：线程在获得锁之前一直阻塞。
+java 的 CAS 同时具有 volatile 的读和写的内存语义。
 
 ## JNI 调用 和 CPU 锁
 java 中，CAS 通过调用 JNI（Java Native Interface，java 本地调用，允许 java 调用其他语言）代码实现。一般借助 C 来调用 CPU 底层指令实现。这属于硬件实现细节，涉及到 CPU 硬件设计中的锁概念。
@@ -128,7 +129,7 @@ CAS 虽然很高效地实现了原子操作，但是 CAS 仍然存在 3 个问�
 # AQS
 AQS：AbstractQueuedSynchronizer，抽象队列同步器，定义了一套多线程访问共享资源的同步器框架。
 {% asset_img AQS框架.png 框架 %}
-它维护了一个volatile int state（代表共享资源）和一个 FIFO 线程等待队列（多线程争用资源被阻塞时会进入此队列）。state 的访问方式有三种:
+它维护了一个 volatile int state（代表共享资源，用来维护同步状态）和一个 FIFO 线程等待队列（多线程争用资源被阻塞时会进入此队列）。state 的访问方式有三种:
 * getState()
 * setState()
 * compareAndSetState()

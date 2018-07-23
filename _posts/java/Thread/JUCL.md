@@ -20,7 +20,7 @@ Lock 比传统线程模型中的 synchronized 方式更加 OO，锁本身也是�
 ## 显式锁 ReentrantLock
 加锁和解锁都是显式实现的，乐观锁机制。
 实现了 Lock 接口，并提供了与 synchronized 相同的 **互斥性、内存可见性、可重入的加锁语义**。
-而 ReentrantLock 的锁功能是由其成员变量 Sync 类型的 sync 实现的。Sync 就继承了 AQS（AbstractQueuedSynchronizer）。从图中可以看出，Sync 在 ReentrantLock 中有两种实现类：NonfairSync、FairSync，对应非公平锁、公平锁两大类型。
+而 ReentrantLock 的锁功能是由其成员变量 Sync 类型的 sync 实现的。Sync 继承了 AQS（AbstractQueuedSynchronizer）。从图中可以看出，Sync 在 ReentrantLock 中有两种实现类：NonfairSync、FairSync，对应非公平锁、公平锁两大类型。
 
 ### 公平锁与非公平锁
 ReentrantLock 提供了两种锁的构造方法：创建非公平锁（默认）和公平锁：
