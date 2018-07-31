@@ -136,6 +136,8 @@ AQS：AbstractQueuedSynchronizer，抽象队列同步器，定义了一套多线
 
 AQS 定义两种资源共享方式：Exclusive（独占，只有一个线程能执行，如 ReentrantLock）和 Share（共享，多个线程可同时执行，如 Semaphore/CountDownLatch）。通过 state 字段描述有多少线程持有锁和锁的种类，用标志位标示独占锁/共享锁以及（如果共享）锁被持有的数量、锁的可重入性以及（如果可重入）重入次数等。
 不同的自定义同步器争用共享资源的方式也不同。自定义同步器在实现时只需要实现共享资源 state 的获取与释放方式即可，至于具体线程等待队列的维护（如获取资源失败入队/唤醒出队等），AQS 已经在顶层实现。
+基于 AQS 实现的同步器有：ReentrantLock、Semaphore、ReentrantReadWriteLock、CountDownLatch、FutureTask 等。
+
 [AQS](https://blog.csdn.net/bigtree_3721/article/details/79317298)
 
 # CLH MCS

@@ -5,7 +5,7 @@ categories: java
 tags: [java, 并发, 线程]
 ---
 [toc]
-# Ioc DI
+# IoC DI
 IoC：Inversion of Control，控制反转；也称 DI：Dependency Injection，依赖注入。
 首先从 IoC 的角度讲，其字面意思“控制反转”包括两方面内容：
 * 控制
