@@ -5,13 +5,7 @@ categories: DB
 tags: [DB, MySQL]
 ---
 [toc]
-
-
-
-
-
-
-
+单进程多线程数据库模型。
 
 
 # 相关概念
