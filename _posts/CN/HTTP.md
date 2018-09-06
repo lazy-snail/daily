@@ -129,3 +129,8 @@ HTTP/1.0 中，默认使用的是短连接，即，浏览器和服务器每进�
 显然，长连接可以省去较多的 TCP 建立/关闭的操作，减少浪费，节约时间。**对于频繁请求资源的场景，如直播、流媒体，较适用长连接**。短连接对于服务器来说管理较为简单，**适用于网页浏览等数据刷新频度较低的场景**，存在的连接都是有用的连接，不需要额外的控制手段。但如果客户请求频繁，将在 TCP 的建立和关闭操作上浪费时间和带宽。
 
 # HTTPS
+Hypertext Transfer Protocol over Secure Socket Layer，以安全为目标的 HTTP 协议通道，简单讲是 HTTP 的安全版。即 HTTP 下加入 SSL 层。所以，HTTPS 的安全基础是 SSL，因此加密的详细内容就需要 SSL。
+
+
+https://www.jianshu.com/p/30b8b40a671c
+https://www.cnblogs.com/zxj015/p/6530766.html
