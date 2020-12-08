@@ -1,0 +1,73 @@
+# IoC
+Inversion of Control，控制反转，也称依赖注入（DI，Dependency Injection）。应用对象之间的解耦。  
+通常所讨论的依赖注入是将一个bean的引用注入到另一个bean的属性或构造器参数中，即将一个对象与另一个对象关联起来。java的反射是实现依赖注入的底层技术。依赖注入是Spring容器的内核，AOP、声明式事务等功能也都基于此。  
+Spring是一种容器框架，它帮助完成类的初始化和装配工作，让开发者从这些底层实现类的实例化、依赖关系装配等工作中解脱出来，专注于业务逻辑的开发工作。它通过配置文件或注解描述类和类之间的依赖关系，利用java的反射功能实例化Bean并建立Bean之间的依赖关系，自动完成类的初始化和依赖注入工作。此外，Spring还提供Bean实例缓存、生命周期管理、Bean实例代理、事件发布、资源装载等高级服务。  
+BeanFactory(com.springframework.beans.factory.BeanFactory)是Spring框架最核心的接口，它提供了高级IoC的配置机制。BeanFactory使管理不同类型的java对象成为可能，应用上下文(com.springframework.context.ApplicationContext)建立在BeanFactory基础之上，提供了更多面向应用的功能，如i18n和框架事件体系等，更易于创建实际应用。一般称BeanFactory为IoC容器，称ApplicationContext为应用上下文，有时也称后者为Spring容器。用途上，BeanFactory是Spring框架的基础设施，面向Spring本身；ApplicationContext面向使用Spring框架的开发者，几乎所有的应用场合都可以直接使用ApplicationContext而非底层的BeanFactory。
+
+## BeanFactory
+和普通的工厂类不同，BeanFactory是类的通用工厂，它可以创建并管理各种类的对象。这些可被创建和管理的对象本身并没有什么特别之处，仅仅是一个POJO，Spring称这些被创建和管理的java对象为Bean。javaBean需要满足一定的规范：提供一个默认不带参数的构造方法；不依赖于某一特定的容器等。Spring所说的Bean比javaBean更宽泛一些，所有可以被Spring容器实例化并管理的java类都可以成为Bean。
+![BeanFactory类体系结构](https://raw.githubusercontent.com/lazy-snail/ImageHosting/master/wiki/BeanFactory-hierarchy.png)
+
+Spring为BeanFactory提供了多种实现，建议使用XmlBeanDefinitionReader、DefaultListableBeaFactory。BeanFactory接口位于类结构树的顶端，最主要的方法就是getBean(String beanName)，该方法从容器中返回特定名称的bean。BeanFactory的功能通过其它接口得到不断扩展。主要有：
+* ListableBeanFactory：该接口定义了访问容器中Bean基本信息的一些方法，如查看bean的个数、获取某一类型bean的配置名、查看容器中是否包括某一bean等；
+* HierarchicalBeanFactory：父子级联IoC容器的接口，子容器可以通过接口方法访问父容器；
+* ConfigurableBeanFactory：增强了IoC容器的可定制性。它定义了设置类装载器、属性编辑器、容器初始化后置处理器等方法。是一个重要的接口；
+* AutowireCapableBeanFactory：定义了将容器中的Bean按某种规则（如按名字匹配、按类型匹配等）进行自动装配的方法；
+* SingletonBeanRegistry：定义了允许在运行期向容器注册单实例bean的方法；
+* BeanDefinitionRegistry：Spring配置文件中每一个\<bean>节点元素在Spring容器中都通过一个BeanDefinition对象表示，它描述了bean的配置信息。而该接口提供向容器手动注册BeanDefinition对象的方法；
+
+### 初始化
+XmlBeanDefinitionReader通过Resource装载Spring配置信息并启动IoC容器，然后就可以通过BeanFactory#getBean(beanName)从IoC容器获取bean。通过BeanFactory启动IoC容器时，并不会初始化配置文件中定义的bean，初始化动作发生在第一次调用时。对应单实例的bean来说，BeanFactory会缓存bean实例，所以第二次使用getBean()获取bean时，将直接从IoC容器的缓存中获取。Spring在DefaultSingletonBeanRegistry类中提供了一个用于缓存单实例bean的缓存器，由HashMap实现，单实例的bean以beanName为键保存在该map中。  
+__初始化BeanFactory时，必须为其提供一种日志框架，否则会报错。__
+
+## ApplicationContext
+如果说BeanFactory是Spring的”心脏“，那么ApplicationContext就是完整的”身躯“。ApplicationContext由BeanFactory派生而来，提供了更多面向实际应用的功能。在BeanFactory中，很多功能需要以编程的方式实现，而在ApplicationContext中则可以通过配置的方式实现。  
+ApplicationContext的主要实现类是ClassPathXmlApplicationContext和FileSystemXmlApplicationContext，前者默认从类路径加载配置文件，后者默认从文件系统中装载配置文件。  
+![ApplicationContext类体系结构](https://raw.githubusercontent.com/lazy-snail/ImageHosting/master/wiki/ApplicationContext-hierarchy.png)
+可见，除继承HierarchicalBeanFactory和ListableBeanFactory接口外，ApplicationContext还通过多个其它接口扩展BeanFactory的功能：
+* ApplicationEventPublisher：让容器拥有发布应用上下文事件的功能，包括容器启动事件、关闭事件等。实现了ApplicationListener事件监听接口的Bean可以接收到容器事件，并对事件进行响应处理。在ApplicationContext抽象实现类AbstractApplicationContext中存在一个ApplicationEventMulticaster，它负责保存所有的监听器，以便在容器产生上下文事件时通知这些事件监听者；
+* MessageSource：为应用提供i18n国际化消息访问的功能；
+* ResourcePatternResolver：所有ApplicationContext实现类都实现了类似于PathMatchingResourcePatternResolver的功能，可以通过带前缀的ant风格的资源文件路径装载Spring配置文件；
+* LifeCycle：提供start()、和stop()，主要用于控制异步处理过程。在具体使用时，该接口同时被ApplicationContext实现以及具体Bean实现，ApplicationContext会将start/stop的信息传递给容器中所有实现了该接口的Bean，以达到管理和控制JMX、任务调度等目的。
+
+ConfigurableApplicationContext扩展于ApplicationContext，它新增了两个主要方法：refresh()、close()，使得ApplicationContext具有启动、刷新、关闭应用上下文的能力。在应用上下文关闭的情况下可以调用refresh()即可启动应用上下文，在已经启动的状态下调用refresh()则可清除缓存并重新装载配置信息，而调用close()则可关闭应用上下文。这些接口方法为容器的控制管理带来了便利，但作为开发者并不需要过多关心它们。  
+### 初始化
+和BeanFactory初始化类似，如果配置文件放在类路径下，优先考虑使用ClassPathXmlApplicationContext实现；如果放在文件系统路径下，则优先考虑FileSystemXmlApplicationContext实现。也可以指定一组配置文件，Spring会完成自动整合。  
+获取ApplicationContext实例后，就可以像BeanFactory一样调用getBean(beaName)返回bean了。而ApplicationContext的初始化和BeanFactory有一个很大区别：后者在初始化容器时，并未初始化所有的Bean，直到第一次访问某个Bean时才实例化该目标Bean；而ApplicationContext则在初始化应用上下文时就实例化所有单实例的Bean。因此，ApplicationContext的初始化时间会比BeanFactory稍长。  
+Spring支持基于类注解的配置方式，主要功能来自JavaConfig的子项目。一个标注了@Configuration注解的POJO即可提供Spring所需的Bean配置信息。而且Spring为基于注解类的配置专门提供了ApplicationContext实现类：AnnotationConfigApplicationContext，可以直接调用方法实例化Bean，启动容器并装配Bean。
+
+## WebApplicationContext
+WebApplicationContext是专门为Web应用准备的，它允许从相对于Web根目录的路径中装载配置文件完成初始化工作。从WebApplicationContext中可以获得ServletContext的引用，整个Web应用上下文对象将作为属性放置到ServletContext中，以便Web应用环境可以访问Spring应用上下文。Spring专门为此提供了一个工具类WebApplicationContextUtils，通过该类的getWebApplicationContext(ServletContext sc)，可以从ServletContext中获取WebApplicationContext实例。  
+在非Web应用的环境下，Bean只有singleton、prototype两种作用域。WebApplicationContext为Bean添加了三个新的作用域：request、session、global session。  
+![WebApplicationContext类体系结构](https://raw.githubusercontent.com/lazy-snail/ImageHosting/master/wiki/WebApplicationContext-hierarchy.png)
+ConfigurableWebApplicationContext扩展了WebApplicationContext，它允许通过配置的方式实例化WebApplicationContext，同时定义了两个重要方法：
+* setServletContext(ServletContext servletContext)：为Spring设置Web应用上下文，以便二者整合；
+* setConfigLocations(String[] configLocations)：设置Spring配置文件地址，一般是相对于Web根目录的地址，如/WEB-INF/xxx-dao.xml、/WEB-INF/xxx-service.xml。用户也可以使用带资源类型前缀的地址，如classpath:com/baidu/beans.xml等。
+
+### 初始化
+WebApplicationContext的初始化方式和BeanFactory、ApplicationContext有所区别，因为需要ServletContext实例。即必须在拥有Web容器的前提下才能完成启动工作，可以在web.xml中配置自启动的Servlet或定义Web容器监听器(ServletContextListener)，二者均可完成启动Spring Web应用上下文的工作。Spring为二者均提供了支持：
+* org.springframework.web.context.ContextLoaderServlet
+* org.springframework.web.context.ContextLoaderListener
+
+二者内部都实现了启动WebApplicationContext实例的逻辑，只需根据Web容器的具体情况选择其一并在web.xml中完成配置即可。
+
+__WebApplicationContext同样需要日志功能，可以将Log4J配置文件放置在类路径/WEB-INF/classes下以便启动Log4J引擎。或在web.xml文件指定自定义的配置文件位置。__
+
+## 注解
+基本上，@Component和@Service具有相同的效果：这两个注解都告诉Spring，注解的类是使用基于注解的配置和类路径扫描进行自动检测时的候选对象。事实上，@Service是@Component的一个特例，它表明注解的类正在向应用程序中的其它层提供业务服务。
+
+
+# 反射
+主要涉及java类加载机制，参考《深入理解java虚拟机》。  
+每个类在jvm中都拥有一个对应的java.lang.Class对象，即类描述对象，它提供了类结构信息的描述。数组、枚举、注解、基本数据类型、void等都有对应的Class对象。  
+Class反射对象描述类语义结构，可以从Class对象中获取构造方法、成员变量、方法类等类元素的反射对象，并以编程的方式通过这些反射对象对目标类对象进行操作。这些反射对象类在java.reflect包中定义。主要的反射类：
+* Constructor：类的构造函数反射类。通过Class#getConstructor()可以获取类的所有构造方法反射对象数组。Constructor的一个主要方法是newInstance(Object... initargs)，通过该方法可以创建一个对象类的实例，相当于new关键字。
+* Method：类方法的反射类。通过Class#getDeclaredMethods()可以获取类的所有方法反射类对象数组Method[]。Method主要的方法有：
+  * invoke(Object obj, Object... args)；
+  * Class getReturnType()：获取方法的返回值类型；
+  * Class[] getParameterTypes()：获取方法的入参类型数组；
+  * Annotation[][] getParameterAnnotations()：获取方法的注解信息。
+* Field：类的成员变量的反射类。通过Class#getDeclaredFields()可以获取类的成员变量反射对象数组，通过Class#getDeclaredField(String name)则可以获得某个特定名称的成员变量反射对象。其最主要的方法是set(Object obj, Object value)，通过value为操作对象obj赋值。如果成员变量为基础类型，则可以使用Field类中提供的带类型名的值设置方法，如setBoolean(Object obj, boolean value)。
+
+此外，java还为包提供了Package反射类，为注解提供了AnnotatedElement反射类。总之，java的反射体系保证了可以通过程序化的方式访问目标类中所有的元素，对于private或protectec成员变量和方法，只要jvm的安全机制允许，也可以通过反射进行调用，此时需要通过setAccessible(boolean access)取消java语言检查，否则将抛出IllegalAccessException。如果jvm安全管理器设置了相应的安全机制，调用会抛出SecurityException。
+
